@@ -27,3 +27,15 @@ class Route(models.Model):
 
     class Meta:
         verbose_name_plural = "Routes"
+
+
+class RouteStop(models.Model):
+    route = models.ForeignKey('Route', on_delete=models.CASCADE)
+    station = models.ForeignKey('Station', on_delete=models.CASCADE)
+    stop_order = models.PositiveIntegerField()
+    arrival_time = models.TimeField()
+    departure_time = models.TimeField()
+
+    class Meta:
+        unique_together = ['route', 'station']
+        ordering = ['stop_order']
