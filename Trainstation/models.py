@@ -1,5 +1,37 @@
 from django.db import models
 
+class Train(models.Model):
+    TRAIN_TYPE_CHOICES = (
+        ('express', 'Express Train'),
+        ('shatabdi', 'Shatabdi Express'),
+        ('rajdhani', 'Rajdhani Express'),
+        ('duronto', 'Duronto Express'),
+        ('jan_shatabdi', 'Jan Shatabdi Express'),
+        ('garib_rath', 'Garib Rath Express'),
+        ('superfast', 'Superfast Train'),
+        ('passenger', 'Passenger Train'),
+        ('local', 'Local Train'),
+        ('mail_express', 'Mail/Express Train'),
+        ('goods_freight', 'Goods/Freight Train'),
+        ('special', 'Special Train'),
+        ('other', 'Other'),
+    )
+
+    train_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    capacity = models.PositiveIntegerField()
+    train_type = models.CharField(max_length=50, choices=TRAIN_TYPE_CHOICES)
+    speed = models.DecimalField(max_digits=5, decimal_places=2)
+    # Add more fields as needed, such as train schedule, status, etc.
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Trains"
+
+
+
 class Station(models.Model):
     station_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100,default="",null=True)
@@ -17,10 +49,10 @@ class Station(models.Model):
 class Route(models.Model):
     route_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
-    description = models.TextField()
+    start_time = models.TimeField(null=True)
     stops = models.ManyToManyField('Station', through='RouteStop')
-    distance = models.DecimalField(max_digits=10, decimal_places=2)
-    duration = models.DurationField()
+    train = models.ForeignKey(Train,null=True,on_delete=models.SET_NULL)
+    
 
     def __str__(self):
         return self.name
@@ -32,10 +64,8 @@ class Route(models.Model):
 class RouteStop(models.Model):
     route = models.ForeignKey('Route', on_delete=models.CASCADE)
     station = models.ForeignKey('Station', on_delete=models.CASCADE)
-    stop_order = models.PositiveIntegerField()
-    arrival_time = models.TimeField()
-    departure_time = models.TimeField()
-
+    Platform = models.PositiveIntegerField()
+    
     class Meta:
         unique_together = ['route', 'station']
-        ordering = ['stop_order']
+        ordering = ['Platform']
