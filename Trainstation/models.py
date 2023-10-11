@@ -65,6 +65,10 @@ class RouteStop(models.Model):
     route = models.ForeignKey('Route', on_delete=models.CASCADE)
     station = models.ForeignKey('Station', on_delete=models.CASCADE)
     Platform = models.PositiveIntegerField()
+    arrival = models.TimeField(null=True,blank=True)
+    Departure = models.TimeField(null=True,blank=True)
+
+    
     
     class Meta:
         unique_together = ['route', 'station']

@@ -21,7 +21,7 @@ class RouteAdmin(admin.ModelAdmin):
 
 # Define the admin class for RouteStop
 class RouteStopAdmin(admin.ModelAdmin):
-    list_display = ('route', 'station', 'Platform')
+    list_display = ('route', 'station', 'Platform','arrival','Departure')
     list_filter = ('route', 'station')
     search_fields = ('route__name', 'station__name')
 
