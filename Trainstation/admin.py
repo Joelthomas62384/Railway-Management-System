@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import *
 
 class StationAdmin(admin.ModelAdmin):
-    list_display = ('station_id', 'name', 'lattitue', 'longitude','platform')  # Include 'station_id' and other model fields
+    list_display = ( 'name','station_id', 'lattitue', 'longitude','platform')  # Include 'station_id' and other model fields
 
 
 
@@ -21,13 +21,13 @@ class RouteAdmin(admin.ModelAdmin):
 
 # Define the admin class for RouteStop
 class RouteStopAdmin(admin.ModelAdmin):
-    list_display = ('route', 'station', 'Platform','arrival','Departure')
+    list_display = ('route', 'station', 'Platform','arrival','Departure','Distance')
     list_filter = ('route', 'station')
     search_fields = ('route__name', 'station__name')
 
 
 class TrainAdmin(admin.ModelAdmin):
-    list_display = ("train_id","name","capacity","train_type","speed")
+    list_display = ("name","train_id","capacity","train_type","speed")
 
     
 
