@@ -103,7 +103,7 @@ class RouteStop(models.Model):
         ordering = ['id']
     def save(self, *args, **kwargs):
         # Check if the arrival field is already set
-        if not self.arrival:
+        if not self.arrival:  
             route_model = Route.objects.get(route_id=self.route.route_id)
             train_model = Train.objects.get(train_id=route_model.train.train_id)
             train_speed = train_model.speed

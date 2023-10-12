@@ -1,0 +1,16 @@
+*{
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+
+
+.form-container{
+    position: relative;
+    top: 30%;
+    left: 35%;
+    display: flex;
+    color: white;
+
+}
