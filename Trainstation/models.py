@@ -93,6 +93,7 @@ class RouteStop(models.Model):
     Platform = models.PositiveIntegerField(default=0)
     arrival = models.TimeField(null=True,blank=True)
     Departure = models.TimeField(null=True,blank=True)
+    reaching_time = models.PositiveIntegerField(null=True,blank=True,default=0)
     Distance = models.IntegerField(null=True,blank=True,default=0 ,verbose_name="Distance (KM)")
 
     
@@ -100,45 +101,29 @@ class RouteStop(models.Model):
     class Meta:
         unique_together = ['route', 'station']
         ordering = ['id']
-    def save(self,*args, **kwargs):
+    def save(self, *args, **kwargs):
+        # Check if the arrival field is already set
+        if not self.arrival:
+            route_model = Route.objects.get(route_id=self.route.route_id)
+            train_model = Train.objects.get(train_id=route_model.train.train_id)
+            train_speed = train_model.speed
 
+            try:
+                previous_stop = RouteStop.objects.filter(route=route_model).order_by('-id')[0]
+            except RouteStop.DoesNotExist:
+                previous_stop = None
 
-        route_model = Route.objects.get(route_id=self.route.route_id)
-        train_model = Train.objects.get(train_id=route_model.train.train_id)
-        train_speed = train_model.speed
-
-        try:
-       
-            previous_stop = RouteStop.objects.filter(route=route_model).order_by('-id')[0]
-        except:
-            previous_stop = False
-
-        if previous_stop:
-    
-            distance , predicted_time = calculate_distance_and_time(previous_stop.station,self.station,ceil(train_speed))
-            
-            departure_datetime = datetime.combine(datetime.today(), previous_stop.Departure)
-            
-        # Create a timedelta object with the predicted_time in minutes
-            time_delta = timedelta(minutes=predicted_time)
-
-            # Calculate the new datetime for Departure
-            new_arrival_datetime = departure_datetime + time_delta
-
-            time_delta2 = timedelta(minutes=5)
-
-            new_departure_datetime = new_arrival_datetime + time_delta2
-
-            new_departure_time = new_departure_datetime.time()
-
-            # Extract the time component from the new datetime for Departure
-            new_arrival_time = new_arrival_datetime.time()
-
-            self.arrival = new_arrival_time
-            self.Distance = distance 
-            self.Departure = new_departure_time
+            if previous_stop:
+                distance, predicted_time = calculate_distance_and_time(previous_stop.station, self.station, ceil(train_speed))
+                departure_datetime = datetime.combine(datetime.today(), previous_stop.Departure)
+                time_delta = timedelta(minutes=predicted_time)
+                self.reaching_time=ceil(predicted_time)
+                new_arrival_datetime = departure_datetime + time_delta
+                self.arrival = new_arrival_datetime.time()
+                self.Distance = distance
+                time_delta2 = timedelta(minutes=5)
+                new_departure_datetime = new_arrival_datetime + time_delta2
+                new_departure_time = new_departure_datetime.time()
+                self.Departure = new_departure_time
 
         super(RouteStop, self).save(*args, **kwargs)
-
-
-
