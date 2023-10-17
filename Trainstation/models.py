@@ -50,6 +50,8 @@ class Station(models.Model):
         verbose_name_plural = "Stations"
 
 
+
+
 class Route(models.Model):
     route_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
@@ -58,12 +60,16 @@ class Route(models.Model):
     stops = models.ManyToManyField('Station', through='RouteStop')
     train = models.ForeignKey(Train,null=True,on_delete=models.SET_NULL)
     
+ 
 
     def __str__(self):
         return self.name
 
     class Meta:
         verbose_name_plural = "Routes"
+    
+  
+
     def save(self, *args, **kwargs):
         super(Route, self).save(*args, **kwargs)
 
@@ -84,6 +90,16 @@ class Route(models.Model):
             # Now, you can use new_time as your departure time in RouteStop
             first_route_stop = RouteStop(route=self, station=self.start_station, Platform=0, arrival=self.start_time, Departure=new_time)
             first_route_stop.save()
+        
+    
+
+
+
+
+
+
+
+
 
 
 

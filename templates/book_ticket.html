@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block cssblock %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="{% static "css/booking.css" %}">
+</style>
+{% endblock cssblock %}
+
+{% block content %}
+<div class="container">
+  <div class="form-container">
+    <form id="booking-form" action="search_trains" method="post">
+      {% csrf_token %}
+      
+        <label for="from">From:</label>
+        <input name="from" id="From" value={{from_name}} readonly required>
+        <label for="to">To:</label>
+        <input name="to" id="To" value={{to_name}} readonly required>
+        <br><br>
+        <label for="name">Name:</label>
+        <input type="text" required name="name">
+        <br><br>
+        <label for="date">Date:</label>
+        <input name="date" type="Date" required>
+        <label for="seats">Total No of Seats:</label>
+        <input type="number" name="seats" value="1" min="0" required> 
+            
+        <br><br>
+        <button type="submit">Submit</button>
+    </form>
+  </div>
+</div>
+
+
+
+
+<div id="train-options">
+  <!-- This is where the train options will be displayed -->
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<script>
+$(function () {
+  $("#From, #To").autocomplete({
+    source: "{% url 'station_names' %}",
+  });
+});
+</script>
+{% endblock scripts %}
