@@ -35,5 +35,6 @@ admin.site.register(RouteStop, RouteStopAdmin)
 admin.site.register(Route, RouteAdmin)
 admin.site.register(Station, StationAdmin)
 admin.site.register(Train,TrainAdmin)
+admin.site.register(TicketBooking)
 
 

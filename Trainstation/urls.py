@@ -7,5 +7,6 @@ urlpatterns = [
     path("booking_form",views.booking_submit,name="bookingform"),
     path('station_names/', views.get_station, name='station_names'),
     path('search_trains', views.search_trains, name='search_trains'),
+    path("ticketbooking",views.ticketboking,name="ticketbooking")
     
 ]

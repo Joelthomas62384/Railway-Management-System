@@ -9,8 +9,14 @@
 
 {% block content %}
 <div class="container">
+  {% if empty %}
+  <h1 style=" color: white;
+  text-align: center;
+  margin: 10%;" class="notavailable" >No Train Available to {{to_name}} from {{from_name}}</h1>
+  
+ {% else %}
   <div class="form-container">
-    <form id="booking-form" action="search_trains" method="post">
+    <form id="booking-form" action="{% url "ticketbooking" %}" method="post">
       {% csrf_token %}
       
         <label for="from">From:</label>
@@ -21,33 +27,32 @@
         <label for="name">Name:</label>
         <input type="text" required name="name">
         <br><br>
-        <label for="date">Date:</label>
-        <input name="date" type="Date" required>
-        <label for="seats">Total No of Seats:</label>
-        <input type="number" name="seats" value="1" min="0" required> 
-            
+        <label for="email">Email:</label>
+        <input type="email" required name="email">
         <br><br>
+        <label for="date">Date:</label>
+        <input name="date" type="Date" value={{date}} required readonly>
+        
+        
+        
+        <br>
+        <br>
+        {% for route , arrival, departure in train_with_arrival %}
+        <input type="radio" value={{route.route_id}} name="route" id="{{route}}">
+        <label for="{{route}}">{{route.train.name}}  {{arrival}} - {{departure}}</label>
+        <br>
+        <br>
+        {% endfor %}
         <button type="submit">Submit</button>
     </form>
   </div>
+  {% endif %}
 </div>
 
 
 
 
-<div id="train-options">
-  <!-- This is where the train options will be displayed -->
-</div>
+
 {% endblock content %}
 
-{% block scripts %}
-<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-<script>
-$(function () {
-  $("#From, #To").autocomplete({
-    source: "{% url 'station_names' %}",
-  });
-});
-</script>
-{% endblock scripts %}
+

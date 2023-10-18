@@ -10,3 +10,11 @@ def calculate_distance_and_time(station1, station2,train_speed):
     # Calculate predicted time based on the distance and train speed
     predicted_time = (distance / train_speed )*60  # Adjust train_speed as needed
     return ceil(distance), predicted_time
+
+def calculate_ticket_price(base_fare, distance, seat_reservation_fee, additional_charges, discount=0):
+    
+    distance_fare = distance * 0.10  
+    total_fare = base_fare + distance_fare + seat_reservation_fee + additional_charges
+    total_fare -= (total_fare * discount)
+
+    return total_fare

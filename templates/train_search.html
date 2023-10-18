@@ -13,10 +13,14 @@
     <form id="booking-form" action="search_trains" method="post">
       {% csrf_token %}
       
-      <label for="from">From:</label>
+      <label for="from">From: </label>
       <input name="from" id="From" required>
-      <label for="to">To:</label>
+      <label for="to">To: </label>
       <input name="to" id="To" required>
+      <br>
+      <br>
+      <label for="">Date: </label>
+      <input type="date" name="date" required>
      
       <br><br>
       <button type="submit">Submit</button>

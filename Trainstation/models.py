@@ -23,7 +23,9 @@ class Train(models.Model):
 
     train_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
+
     capacity = models.PositiveIntegerField()
+    reservation_seats = models.PositiveIntegerField(default=0)
     train_type = models.CharField(max_length=50, choices=TRAIN_TYPE_CHOICES)
     speed = models.DecimalField(max_digits=5, decimal_places=2)
     # Add more fields as needed, such as train schedule, status, etc.
@@ -91,11 +93,6 @@ class Route(models.Model):
             first_route_stop = RouteStop(route=self, station=self.start_station, Platform=0, arrival=self.start_time, Departure=new_time)
             first_route_stop.save()
         
-    
-
-
-
-
 
 
 
@@ -143,3 +140,23 @@ class RouteStop(models.Model):
                 self.Departure = new_departure_time
 
         super(RouteStop, self).save(*args, **kwargs)
+
+
+
+
+class TicketBooking(models.Model):
+    name = models.CharField(max_length=100,default="")
+    email = models.EmailField(null=True,blank=True)
+    from_station = models.ForeignKey(Station,on_delete=models.DO_NOTHING,related_name="Departures")
+    to_station = models.ForeignKey(Station,on_delete=models.DO_NOTHING,related_name="Arrivals")
+    event_date = models.DateField()
+    reservation = models.BooleanField(default=False)
+    reservation_seat = models.IntegerField(null=True,blank=True)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)  # Store the total price of tickets
+    payment_id = models.CharField(max_length=255, blank=True, null=True)  # Store the payment ID from Razorpay
+    paid = models.BooleanField(default=False)  # Flag to indicate if the booking is paid
+
+    def __str__(self):
+        return f"{self.user.username}'s Booking for {self.event_name}"      
+
+
