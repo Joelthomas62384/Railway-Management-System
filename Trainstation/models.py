@@ -28,6 +28,8 @@ class Train(models.Model):
     reservation_seats = models.PositiveIntegerField(default=0)
     train_type = models.CharField(max_length=50, choices=TRAIN_TYPE_CHOICES)
     speed = models.DecimalField(max_digits=5, decimal_places=2)
+    base_fair = models.PositiveIntegerField(default=10)
+    additional_charge = models.PositiveIntegerField(default=10)
     # Add more fields as needed, such as train schedule, status, etc.
 
     def __str__(self):
@@ -149,14 +151,17 @@ class TicketBooking(models.Model):
     email = models.EmailField(null=True,blank=True)
     from_station = models.ForeignKey(Station,on_delete=models.DO_NOTHING,related_name="Departures")
     to_station = models.ForeignKey(Station,on_delete=models.DO_NOTHING,related_name="Arrivals")
+    route = models.ForeignKey(Route,on_delete=models.CASCADE,null=True,blank=True)
     event_date = models.DateField()
     reservation = models.BooleanField(default=False)
     reservation_seat = models.IntegerField(null=True,blank=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)  # Store the total price of tickets
-    payment_id = models.CharField(max_length=255, blank=True, null=True)  # Store the payment ID from Razorpay
     paid = models.BooleanField(default=False)  # Flag to indicate if the booking is paid
-
+    razor_pay_order_id = models.CharField(max_length=1000,null=True,blank=True)
+    razor_pay_payment_id = models.CharField(max_length=1000,null=True,blank=True)
+    razor_pay_payment_signature = models.CharField(max_length=1000,null=True,blank=True)
+    ticket_image = models.ImageField(upload_to="tickets",null=True,blank=True)
     def __str__(self):
-        return f"{self.user.username}'s Booking for {self.event_name}"      
+        return f"{self.name}'s Booking on {self.event_date}"      
 
 

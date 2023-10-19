@@ -42,7 +42,19 @@
         <label for="{{route}}">{{route.train.name}}  {{arrival}} - {{departure}}</label>
         <br>
         <br>
+        
         {% endfor %}
+
+        <Label>Reservation : </Label>
+        <br>
+        <br>
+        <input type="radio" value="True" name="reservation" id="reservationyes">
+        <label for="reservationyes">Yes</label>
+        
+        <input type="radio" value="False" name="reservation" id="reservationno">
+        <label for="reservationno">No</label>
+        <br>
+        <br>
         <button type="submit">Submit</button>
     </form>
   </div>
