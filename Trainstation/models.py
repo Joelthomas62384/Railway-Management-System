@@ -165,3 +165,38 @@ class TicketBooking(models.Model):
         return f"{self.name}'s Booking on {self.event_date}"      
 
 
+
+
+
+
+    
+
+
+class Train_tracking(models.Model):
+    date = models.DateField()
+    route = models.ForeignKey(Route, on_delete=models.CASCADE)
+    route_stops = models.ManyToManyField(RouteStop, through='RoutesArrived')
+
+    def __str__(self):
+        return f"Train Tracking for {self.route} on {self.date}"
+
+    def save(self, *args, **kwargs):
+        super(Train_tracking, self).save(*args, **kwargs)
+        if self.route:
+            # Get all route stops associated with the selected route
+            route_stops = self.route.stops.all()
+            for route_stop in route_stops:
+                # Create a RoutesArrived instance for each route stop
+                RoutesArrived.objects.create(train_tracking=self, route_stops=route_stop)
+
+
+
+
+class RoutesArrived(models.Model):
+    train_tracking = models.ForeignKey(Train_tracking,on_delete=models.CASCADE)
+    route_stops = models.ForeignKey(RouteStop,on_delete=models.CASCADE)
+    Arrived = models.BooleanField(default=False)
+    Departed = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return self.route_stops.station.name
