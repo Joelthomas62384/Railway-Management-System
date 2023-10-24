@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     font-family: sans-serif;
+    /* overflow: hidden; */
 }
 .logo a {
     text-decoration: none;
@@ -19,6 +20,7 @@
     background-size: cover;
     position: relative;
     z-index:0;
+    overflow: hidden;
     
 }
 

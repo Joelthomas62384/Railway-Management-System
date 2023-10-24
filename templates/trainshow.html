@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block cssblock %}
+<style>
+
+    .contain{
+        position: relative;
+        top:30%;
+        color:white;
+        width:100%;
+    }
+    #customers {
+        margin:auto;
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 80%;
+      }
+      
+      #customers td, #customers th {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      #customers tr{
+        cursor: pointer;
+      }
+      
+      
+      #customers tr:hover {background-color: #ddd;color:black;}
+
+      #customers th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #04AA6D;
+        color: white;
+      }
+ </style>
+</style>
+
+{% endblock cssblock %}
+{% block content %}
+
+<div class="container">
+    <div class="contain">
+
+    
+   
+   <table id="customers">
+    <tr>
+      <th>Train Name</th>
+      <th>Route</th>
+    
+    </tr>
+    {% for routes  in route %}
+    
+   {% for i in routes %}
+    <tr onclick=callpage({{i.route_id}}) >
+      <td  >{{i.train.name}}</td>
+      <td>{{i.name}}</td>
+      
+    </tr>
+    {% endfor %}
+    
+    {% endfor %}
+
+  </table>
+</div>
+
+<script>
+  function callpage(id) {
+    console.log(id)
+    id = Number.parseInt(id)
+
+    const url = `/live-status/${id}`; // Construct the URL with the id
+    window.location.href = url; // Redirect to the constructed URL
+}
+
+</script>
+
+</div>
+
+
+{% endblock content %}

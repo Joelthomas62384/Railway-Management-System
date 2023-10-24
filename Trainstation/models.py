@@ -64,7 +64,7 @@ class Route(models.Model):
     stops = models.ManyToManyField('Station', through='RouteStop')
     train = models.ForeignKey(Train,null=True,on_delete=models.SET_NULL)
     
- 
+
 
     def __str__(self):
         return self.name
@@ -72,7 +72,7 @@ class Route(models.Model):
     class Meta:
         verbose_name_plural = "Routes"
     
-  
+
 
     def save(self, *args, **kwargs):
         super(Route, self).save(*args, **kwargs)
@@ -143,6 +143,9 @@ class RouteStop(models.Model):
 
         super(RouteStop, self).save(*args, **kwargs)
 
+    def __str__(self) -> str:
+        return self.station.name
+
 
 
 
@@ -184,10 +187,11 @@ class Train_tracking(models.Model):
         super(Train_tracking, self).save(*args, **kwargs)
         if self.route:
             # Get all route stops associated with the selected route
-            route_stops = self.route.stops.all()
+            route_stops = self.route.routestop_set.all()
             for route_stop in route_stops:
                 # Create a RoutesArrived instance for each route stop
                 RoutesArrived.objects.create(train_tracking=self, route_stops=route_stop)
+
 
 
 

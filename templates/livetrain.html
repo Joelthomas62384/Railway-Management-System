@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+
+
+{% block cssblock %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <style>
+    button{
+        margin-top: 5%;
+padding: 10px;
+text-decoration: none;
+color: white;
+padding: 10px;
+background-color: rgb(255, 128, 0);
+/* border: 2px solid red; */
+border-radius: 2px;
+transition: 0.3s ease-in-out;
+shadow:0;
+    }
+
+    button:hover{
+        background-color: rgb(192, 64, 64);
+        opacity: 0.9;
+    }
+</style>
+{% endblock cssblock %}
+{% block content %}
+
+<div class="container" >
+
+
+    <form action="showtrain" method="get" style="color:white;    position: relative;
+    top: 40%;
+    left: 27%;">
+        <label for="train" >Enter the Name / Number of the Train : </label>
+        <input type="text" id="tags" name="train" autocomplete="off">
+        <button type="submit">Check</button>
+
+    </form>
+
+</div>
+
+{% block scripts %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <script>
+    $( function() {
+   
+      $( "#tags" ).autocomplete({
+        source: '{% url "getTrain" %}'
+      });
+    } );
+    </script>
+{% endblock scripts %}
+{% endblock content %}

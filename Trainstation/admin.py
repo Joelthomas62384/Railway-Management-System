@@ -16,6 +16,14 @@ class RouteAdmin(admin.ModelAdmin):
     
     search_field = ('name')
     inlines = [RouteStopInline]
+
+
+class RoutesArrivedInline(admin.TabularInline):
+    model = RoutesArrived
+
+
+class Train_trackingAdmin(admin.ModelAdmin):
+    inlines = [RoutesArrivedInline]
     
 
 
@@ -36,5 +44,5 @@ admin.site.register(Route, RouteAdmin)
 admin.site.register(Station, StationAdmin)
 admin.site.register(Train,TrainAdmin)
 admin.site.register(TicketBooking)
-
+admin.site.register(Train_tracking,Train_trackingAdmin)
 
