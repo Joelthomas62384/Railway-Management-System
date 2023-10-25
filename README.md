@@ -47,16 +47,14 @@ python manage.py runserver
 
 This project is licensed under the [License Name]. See the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
 
-[Give credit to any libraries, tools, or individuals who contributed to the project.]
 
 ## Contact
 
 If you have any questions or need assistance, you can contact the project author:
 
 - Joel Thomas
-- Email: [joel@example.com]
+- Email: kattuparamban1103@gmail.com
 
 ```
 
