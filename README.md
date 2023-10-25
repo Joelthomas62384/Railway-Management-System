@@ -22,7 +22,7 @@ To set up the Railway Management System on your local machine, follow these step
    - Clone this repository to your local machine.
 
    ```bash
-   [git clone https://github.com/yourusername/railway-management-system.git](https://github.com/Joelthomas62384/Railway-Management-System.git)
+   git clone https://github.com/yourusername/railway-management-system.git
    ```
 
 3. **Install Python Dependencies**
