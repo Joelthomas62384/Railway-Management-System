@@ -1,4 +1,4 @@
-```markdown
+
 # Railway Management System
 
 Railway Management System is a project that aims to [briefly describe the purpose or goal of the project].
