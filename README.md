@@ -33,7 +33,7 @@ To set up the Railway Management System on your local machine, follow these step
 
 ## Usage
 
-[Explain how to run or use the Railway Management System. Provide usage examples and instructions.]
+
 
 ```bash
 python manage.py runserver
@@ -55,6 +55,3 @@ If you have any questions or need assistance, you can contact the project author
 
 - Joel Thomas
 - Email: kattuparamban1103@gmail.com
-
-```
-
