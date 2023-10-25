@@ -7,7 +7,7 @@ from channels.layers import get_channel_layer
 from django.dispatch import receiver
 from asgiref.sync import async_to_sync
 import json
-
+import datetime
 
 class Train(models.Model):
     TRAIN_TYPE_CHOICES = (
@@ -110,7 +110,6 @@ class Route(models.Model):
 class RouteStop(models.Model):
     route = models.ForeignKey('Route', on_delete=models.CASCADE)
     station = models.ForeignKey('Station', on_delete=models.CASCADE)
-    Platform = models.PositiveIntegerField(default=0)
     arrival = models.TimeField(null=True,blank=True)
     Departure = models.TimeField(null=True,blank=True)
     reaching_time = models.PositiveIntegerField(null=True,blank=True,default=0)
@@ -206,6 +205,7 @@ def create_routes_arrived(sender, instance, created, **kwargs):
 class RoutesArrived(models.Model):
     train_tracking = models.ForeignKey(Train_tracking,on_delete=models.CASCADE)
     route_stops = models.ForeignKey(RouteStop,on_delete=models.CASCADE)
+    Platform = models.PositiveIntegerField(default=0)
     Arrived = models.BooleanField(default=False)
     Departed = models.BooleanField(default=False)
 
@@ -215,17 +215,18 @@ class RoutesArrived(models.Model):
 
 
 
-@receiver(post_save, sender=RouteStop)
+@receiver(post_save, sender=RoutesArrived)
 def platform_status_handler(sender,instance,created,**kwargs):
     if not created:
         channel_layer = get_channel_layer()
         data = {}
-        route_stops = RouteStop.objects.filter(route=instance.route.route_id)
+        train_tracking = Train_tracking.objects.filter(route=instance.route_stops.route.route_id).get(date=datetime.datetime.today())
+        route_stops = RoutesArrived.objects.filter(train_tracking=train_tracking)
         data = {}
         for i in route_stops:
             data[f"p{i.id}"] = i.Platform
         async_to_sync(channel_layer.group_send)(
-            "platform_%s" % instance.route.route_id,{
+            "platform_%s" % instance.route_stops.route.route_id,{
 
                 "type":'platform_status',
                 "value":json.dumps(data)

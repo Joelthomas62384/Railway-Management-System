@@ -2,6 +2,7 @@ from channels.generic.websocket import WebsocketConsumer
 import json
 from . models import *
 from asgiref.sync import async_to_sync,sync_to_async
+import datetime
 
 
 class PaymentUpdate(WebsocketConsumer):
@@ -15,7 +16,8 @@ class PaymentUpdate(WebsocketConsumer):
         )
         self.accept()
         routes = Route.objects.get(route_id=self.room_name)
-        route_stops = RouteStop.objects.filter(route=routes)
+        train_tracking = Train_tracking.objects.filter(route=routes).get(date=datetime.datetime.today())
+        route_stops = RoutesArrived.objects.filter(train_tracking=train_tracking)
         data = {}
         for i in route_stops:
             data[f"p{i.id}"] = i.Platform
