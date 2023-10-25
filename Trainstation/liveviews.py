@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse,HttpResponse
 from . models import *
 from django.db.models import Q
+import datetime
 
 
 
@@ -57,8 +58,17 @@ def showtrain(request):
 
 def live_status(request,id):
     routes = Route.objects.get(route_id=id)
-    route_stops = RouteStop.objects.filter(route=routes)
+    todaydate = datetime.datetime.today()
+    try:
+        train_tracking = Train_tracking.objects.filter(date=todaydate).get(route=routes)
+        train_routes = RoutesArrived.objects.filter(train_tracking=train_tracking)
+    except :
+        return HttpResponse("Train not available today")
+    
+    print(train_routes)
+
+
     context = {
-        'route_stops':route_stops
+        'route_stops':train_routes
     }
     return render(request,"live-status.html",context)

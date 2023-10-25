@@ -2,6 +2,11 @@ from django.db import models
 from datetime import timedelta, datetime, time
 from .utils import calculate_distance_and_time
 from math import ceil
+from django.db.models.signals import post_save
+from channels.layers import get_channel_layer
+from django.dispatch import receiver
+from asgiref.sync import async_to_sync
+import json
 
 
 class Train(models.Model):
@@ -182,16 +187,18 @@ class Train_tracking(models.Model):
 
     def __str__(self):
         return f"Train Tracking for {self.route} on {self.date}"
-
     def save(self, *args, **kwargs):
-        super(Train_tracking, self).save(*args, **kwargs)
-        if self.route:
-            # Get all route stops associated with the selected route
-            route_stops = self.route.routestop_set.all()
-            for route_stop in route_stops:
-                # Create a RoutesArrived instance for each route stop
-                RoutesArrived.objects.create(train_tracking=self, route_stops=route_stop)
+            # Avoid creating new RoutesArrived instances if the Train_tracking instance already exists
+            if not self.pk:
+                super(Train_tracking, self).save(*args, **kwargs)
 
+@receiver(post_save, sender=Train_tracking)
+def create_routes_arrived(sender, instance, created, **kwargs):
+    if created:
+        # Get all route stops associated with the selected route
+        route_stops = instance.route.routestop_set.all()
+        for route_stop in route_stops:
+            RoutesArrived.objects.create(train_tracking=instance, route_stops=route_stop)
 
 
 
@@ -204,3 +211,23 @@ class RoutesArrived(models.Model):
 
     def __str__(self) -> str:
         return self.route_stops.station.name
+    
+
+
+
+@receiver(post_save, sender=RouteStop)
+def platform_status_handler(sender,instance,created,**kwargs):
+    if not created:
+        channel_layer = get_channel_layer()
+        data = {}
+        route_stops = RouteStop.objects.filter(route=instance.route.route_id)
+        data = {}
+        for i in route_stops:
+            data[f"p{i.id}"] = i.Platform
+        async_to_sync(channel_layer.group_send)(
+            "platform_%s" % instance.route.route_id,{
+
+                "type":'platform_status',
+                "value":json.dumps(data)
+                }
+        )

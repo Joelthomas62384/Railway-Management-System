@@ -57,11 +57,11 @@
     {% for i  in route_stops %}
     
    
-    <tr id = "{{i.id}}">
-      <td  >{{i.station.name}}</td>
-      <td>{{i.arrival}}</td>
-      <td>{{i.Departure}}</td>
-      <td>{{i.Platform}}</td>
+    <tr id = "{{i.route_stops.id}}">
+      <td  >{{i.route_stops.station.name}}</td>
+      <td>{{i.route_stops.arrival}}</td>
+      <td>{{i.route_stops.Departure}}</td>
+      <td id="p{{i.route_stops.id}}">{{i.route_stops.Platform}} </td>
       
     </tr>
     
@@ -71,5 +71,44 @@
   </table>
 </div>
 
+
+<script>
+  let loc = window.location.pathname;
+  let parts = loc.split("/")
+  let id = parts[parts.length-1]
+  
+
+
+  url = `ws://localhost:8000/ws/platform/${id}`
+
+  const websocketPlatform = new WebSocket(url)
+
+
+  websocketPlatform.onopen = function(e) {
+    console.log("WebSocket connection is open and ready.");
+};
+
+websocketPlatform.onmessage = function(e) {
+    let data = JSON.parse(e.data);
+    console.log(data);
+    for (i in data.payload){
+      let elem = document.getElementById(i);
+      if (elem){
+        elem.innerHTML = data.payload[i]
+      }
+
+    }
+};
+
+websocketPlatform.onclose = function(e) {
+    console.log("WebSocket connection closed.");
+};
+
+websocketPlatform.onerror = function(e) {
+    console.error("WebSocket error:", e);
+};
+
+
+</script>
 
 {% endblock content %}
