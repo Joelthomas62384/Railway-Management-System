@@ -21,7 +21,8 @@ application = get_asgi_application()
 
 
 ws_pattern = [
-    path('ws/platform/<id>',consumers.PaymentUpdate.as_asgi())
+    path('ws/platform/<id>',consumers.PlatformUpdate.as_asgi()),
+    path('ws/arrival/<id>',consumers.ArrivalUpdate.as_asgi()),
 ]
 
 application = ProtocolTypeRouter({

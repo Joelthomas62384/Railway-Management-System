@@ -232,3 +232,34 @@ def platform_status_handler(sender,instance,created,**kwargs):
                 "value":json.dumps(data)
                 }
         )
+
+
+@receiver(post_save,sender=RoutesArrived)
+def arrival_status_arrival(sender,instance,created,**kwargs):
+    if not created:
+        channel_layer = get_channel_layer()
+        data = {}
+        train_tracking = Train_tracking.objects.filter(route=instance.route_stops.route.route_id).get(date=datetime.datetime.today())
+        route_arrived = RoutesArrived.objects.filter(train_tracking=train_tracking)
+        arrived_filter = route_arrived.filter(Arrived=True)
+
+        route_arrived_list = list(route_arrived.values())
+        length_route_arrived = len(route_arrived)
+        current_station = RoutesArrived.objects.filter(train_tracking=train_tracking,Arrived=False).first()
+
+        data['route_arrived'] = route_arrived_list
+        # data['arrived_filter'] = arrived_filter_list
+        # data['departed_filter'] = departed_list
+        data['length'] = length_route_arrived
+        data['arrived_len'] = len(arrived_filter)
+        try:
+            data['current_station'] = current_station.route_stops.station.name
+        except:
+            data['current_station'] = "Finished Journey"
+        async_to_sync(channel_layer.group_send)(
+            "arrival_%s" % instance.route_stops.route.route_id,{
+
+                "type":'arrival_status',
+                "value":json.dumps(data)
+                }
+        )

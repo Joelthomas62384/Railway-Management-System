@@ -22,11 +22,11 @@
         padding: 8px;
       }
       #customers tr{
-        cursor: pointer;
+        {% comment %} cursor: pointer; {% endcomment %}
       }
       
       
-      #customers tr:hover {background-color: #ddd;color:black;}
+      {% comment %} #customers tr:hover {background-color: #ddd;color:black;} {% endcomment %}
 
       #customers th {
         padding-top: 12px;
@@ -37,6 +37,26 @@
       }
  </style>
 </style>
+<style>
+  /* Style for the progress container */
+  .progress-container {
+    width: 80%;
+    {% comment %} background-color: #ccc; {% endcomment %}
+    border:1px solid white;
+    margin:auto;
+  }
+
+  /* Style for the progress bar */
+  .progress-bar {
+    width: 20%;
+    height: 30px;
+    background-color: #0f0352; /* Green color for the progress */
+    text-align: center;
+    line-height: 30px;
+    color: white;
+  }
+</style>
+{% comment %} <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> {% endcomment %}
 
 {% endblock cssblock %}
 {% block content %}
@@ -44,7 +64,12 @@
 <div class="container">
     <div class="contain">
 
-    
+   
+      <h4 style="margin-left:4%;" id="station"></h4>
+      <div class="progress-container">
+        <div class="progress-bar">20%</div>
+      </div>
+
    
    <table id="customers">
     <tr>
@@ -57,11 +82,13 @@
     {% for i  in route_stops %}
     
    
-    <tr id = "{{i.route_stops.id}}">
+    <tr id = "{{ i.id }}">
+      
+     
       <td  >{{i.route_stops.station.name}}</td>
       <td>{{i.route_stops.arrival}}</td>
       <td>{{i.route_stops.Departure}}</td>
-      <td id="p{{i.id}}">{{i.route_stops.Platform}} </td>
+      <td id="p{{i.id}}">{{i.Platform}} </td>
       
     </tr>
     
@@ -90,7 +117,7 @@
 
 websocketPlatform.onmessage = function(e) {
     let data = JSON.parse(e.data);
-    console.log(data);
+    
     for (i in data.payload){
       let elem = document.getElementById(i);
       if (elem){
@@ -109,6 +136,69 @@ websocketPlatform.onerror = function(e) {
 };
 
 
+let newurl = `ws://localhost:8000/ws/arrival/${id}`
+const WebsocketArrival = new WebSocket(newurl)
+
+
+WebsocketArrival.onopen = function(e){
+  console.log("Connected to the new WebSocket")
+}
+
+
+WebsocketArrival.onmessage = function(e){
+
+
+  let data = JSON.parse(e.data);
+let payload = data['payload']; // Access the 'payload' object
+
+let route_arrived = payload["route_arrived"];
+let len_arrived = payload['arrived_len'];
+let len = payload['length'];
+  progressBar(len_arrived,len)
+  document.getElementById("station").innerHTML ="Next Station : "+ payload["current_station"]
+
+  
+
+
+
+  for (i of route_arrived){
+    if (i['Departed'] == true){
+     
+      let elem = document.getElementById(`${i['id']}`)
+      if (elem){
+        elem.style.background = "#888c8a"
+        elem.style.color = "black"
+      }else{
+        elem.style.background = ""
+      }
+    }
+    else if (i['Arrived']==true){
+     
+      let elem = document.getElementById(`${i['id']}`)
+      if (elem){
+        elem.style.background = "#a1f7cc"
+        elem.style.color = "black"
+      }
+    }else{
+      let elem = document.getElementById(`${i['id']}`)
+      elem.style.background = ""
+      elem.style.color = "white"
+      }
+  }
+  function progressBar(num, total) {
+    let percent = (num / total) * 100;
+    percent = Number.parseInt(percent);
+    let elem = document.querySelector(".progress-bar");
+    if(percent>0){
+    elem.style.width = percent + "%"; // Set the width as a percentage
+    elem.innerHTML = percent+"% Journey Finished"
+    }else{
+      elem.style.width = "0%"
+      elem.innerHTML = "0%"
+    }
+  }  
+
+}
 </script>
 
 {% endblock content %}

@@ -10,6 +10,7 @@ import razorpay
 
 
 
+
 def home(request):
     return render(request,"index.html")
 
@@ -51,42 +52,39 @@ def search_trains(request):
     correct_routes = []
     from_arrival = []
     to_arrival = []
+
     if request.method == "POST":
         from_station_name = request.POST.get("from")
         to_station_name = request.POST.get("to")
         date = request.POST.get("date")
-        
+
         try:
             from_station = Station.objects.get(name=from_station_name)
             to_station = Station.objects.get(name=to_station_name)
-          
+
             routes = Route.objects.filter(
                 routestop__station=from_station
             ).filter(
                 routestop__station=to_station
-            )
+            ).distinct()
 
             for route in routes:
-             
                 from_stop = RouteStop.objects.filter(route=route, station=from_station).first()
                 to_stop = RouteStop.objects.filter(route=route, station=to_station).first()
-                
+
                 if from_stop and to_stop and from_stop.id < to_stop.id:
                     correct_routes.append(route)
                     from_arrival.append(from_stop.arrival.strftime('%H:%M'))
                     to_arrival.append(to_stop.arrival.strftime('%H:%M'))
-                   
 
         except Station.DoesNotExist:
             print(f"Station not found: {from_station_name} or {to_station_name}")
         except Route.DoesNotExist:
             print("No valid route found.")
 
-
+        # Sort the route_data based on 'from' arrival time
         route_data = list(zip(correct_routes, from_arrival, to_arrival))
-
-        route_data.sort(key=lambda x: datetime.strptime(x[1], '%H:%M'))
-
+        route_data.sort(key=lambda x: datetime.datetime.strptime(x[1], '%H:%M'))
 
         sorted_routes = [item[0] for item in route_data]
 
@@ -94,11 +92,12 @@ def search_trains(request):
             "from_name": from_station_name,
             'to_name': to_station_name,
             'date': date,
-            'train_with_arrival': set(route_data), 
+            'train_with_arrival': set(route_data),
             'empty': True if len(sorted_routes) < 1 else False
         }
 
         return render(request, "book_ticket.html", context)
+
     return render(request, "book_ticket.html")
 
 
