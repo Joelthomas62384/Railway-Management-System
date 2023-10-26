@@ -20,6 +20,18 @@ urlpatterns = [
     path("livetrain",liveviews.livetrain,name="livetrain"),
     path("get_train/",liveviews.get_train,name="getTrain"),
     path("showtrain",liveviews.showtrain,name="showtrain"),
-    path("live-status/<int:id>",liveviews.live_status,name="livestatus")
+    path("live-status/<int:id>",liveviews.live_status,name="livestatus"),
+
+
+
+
+    # ---------------------------------------------------------------------------------------------
+                                            # User 
+
+    path('check-username/', views.check_username_availability, name='check_username_availability'),
+    path("Logout-user",views.Logout_user,name="logout"),
+    path("register-user",views.register_user,name="register"),
+    path('login-user',views.Login,name='login'),
+
     
 ]

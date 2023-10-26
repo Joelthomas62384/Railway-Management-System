@@ -14,13 +14,24 @@ def calculate_distance_and_time(station1, station2,train_speed):
     predicted_time = (distance / train_speed )*60  # Adjust train_speed as needed
     return ceil(distance), predicted_time
 
-def calculate_ticket_price(base_fare, distance,  additional_charges ,seat_reservation_fee=0, discount=0):
-    
-    distance_fare = distance * 0.20  
-    total_fare = base_fare + distance_fare + seat_reservation_fee + additional_charges
-    total_fare -= (total_fare * discount)
+def calculate_ticket_price(base_fare, distance, additional_charges, seat_reservation_fee=0, discount=0):
+    # Calculate the fare based on the distance
+    distance_fare = distance * 0.20
 
-    return total_fare
+    # Calculate the total fare without discount
+    total_fare = base_fare + distance_fare + seat_reservation_fee + additional_charges
+
+    # Calculate the discount amount
+    discount_amount = (total_fare * discount) / 100
+
+    # Apply the discount to the total fare
+    discounted_fare = total_fare - discount_amount
+
+    print(total_fare,discount_amount,discounted_fare)
+
+    return total_fare , discounted_fare , discount_amount
+
+ 
 
 
 
@@ -54,6 +65,7 @@ def create_image_from_model(ticket_booking):
     ticket_number = ticket_booking.id
     train_number = ticket_booking.route.train.train_id
     train_name = ticket_booking.route.train.name
+    discount = ticket_booking.discount
 
     # Position and format the model data
     data_x, data_y = 20, 60
@@ -71,7 +83,10 @@ def create_image_from_model(ticket_booking):
         "Reservation Seat No": reservation_seat,
         'Event Date': event_date,
         'Ticket Number': ticket_number,
+        'discount':str(discount) +  "% govt approved privilage" if discount>0 else 0,
+        
         'Total Price': total_price,
+        'discounted price': ceil(total_price - (total_price*discount)/100) if discount>0 else 0
     }
 
     for field, value in model_data.items():

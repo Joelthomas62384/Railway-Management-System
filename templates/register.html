@@ -1,0 +1,135 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block cssblock %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="{% static "css/booking.css" %}">
+</style>
+{% endblock cssblock %}
+
+
+
+{% block content %}
+
+<div class="container">
+    <div class="form-container">
+    <form action="{% url "register" %}" method="post">
+        {% csrf_token %}
+        <label for="">UserName - unique : </label>
+        
+        <input type="text" id="username" name="username" required placeholder="username" required >
+        <span id="usernameError" style="color: red;"></span>
+        <br>
+        <br>
+        <label for="">Email : </label>
+        <input type="email" required name="email" placeholder="name@example.com">
+        <br>
+        <br>
+        <label for="">password : </label>
+        <input id="pass" type="password" name="pass" required placeholder="******">
+        <br>
+        <br>
+        <label for=""> Repeat password : </label>
+        <input id="repass" type="password" required placeholder="******">
+         <span id="passerror" style="color: red;"></span>
+        <br>
+        <br>
+        <h3>Choose</h3>
+        <label for="army">Army</label>
+        <input required  type="radio" name="privilage" id="army" value="army">
+        <br>
+        <br>
+        <label for="dabled">Differently Abled</label>
+        <input  required type="radio" name="privilage" id="dabled" value="dabled">
+        <br>
+        <br>
+        <label for="none">None of Them</label>
+        <input required  type="radio" name="privilage" id="none" value="none">
+        <br>
+        <br>
+        <button id="butt" type="submit">Submit</button>
+        </form>
+
+</div>                                      
+</div>
+
+<script>
+    const usernameInput = document.getElementById('username');
+    const usernameError = document.getElementById('usernameError');
+    const pass = document.getElementById('passerror');
+    const button = document.getElementById('butt')
+    const password = document.getElementById('pass')
+    const rePassword = document.getElementById('repass')
+    let flag = true;
+    usernameInput.addEventListener('input', () => {
+        const username = usernameInput.value;
+        // Check if the username is not empty
+        if (username.trim() !== '') {
+            // Send an AJAX request to the server to check if the username exists
+            checkUsernameAvailability(username);
+            if (username.length<4){
+                button.disabled = true;
+                usernameError.innerHTML = "username is too short"
+                usernameError.style.color = "red";
+            }
+            else{
+                flag = false;
+                usernameError.innerHTML = ""
+                button.disabled = false;
+            }
+        } else {
+            // Clear the error message if the input is empty
+           // usernameError.textContent = '';
+        }
+
+        
+    });
+
+    
+       
+  
+  
+    rePassword.addEventListener('input',()=>{
+        const passvalue = password.value
+        const repass = rePassword.value
+        
+        if (passvalue!=repass){
+            pass.innerHTML = "Password Doesn't match"
+            pass.style.color= "red"
+            button.disabled = true
+        }
+        else{
+            
+            pass.innerHTML = ""
+            button.disabled = false
+        }
+    })
+
+    function checkUsernameAvailability(username) {
+        // You should replace this URL with the endpoint that checks username availability on your server.
+        const url = `http://127.0.0.1:8000/check-username?username=${username}`;
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    usernameError.textContent = 'Username already exists';
+                    usernameInput.style.borderColor = 'red';
+                    button.disabled = true;
+
+                } else {
+                    if (flag==true){
+                    usernameError.textContent = '';
+                    usernameInput.style.borderColor = '';
+                    button.disabled=false;
+                    }
+                }
+            })
+            .catch(error => {
+                // Handle errors, e.g., connection issues
+                console.error('Error:', error);
+            });
+    }
+</script>
+{% endblock content %}      

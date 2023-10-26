@@ -45,4 +45,5 @@ admin.site.register(Station, StationAdmin)
 admin.site.register(Train,TrainAdmin)
 admin.site.register(TicketBooking)
 admin.site.register(Train_tracking,Train_trackingAdmin)
+admin.site.register(UserPrivilage)
 

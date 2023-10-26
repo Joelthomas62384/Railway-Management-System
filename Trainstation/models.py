@@ -8,6 +8,36 @@ from django.dispatch import receiver
 from asgiref.sync import async_to_sync
 import json
 import datetime
+from django.contrib.auth.models import User
+
+
+class UserPrivilage(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    Choices = (
+        (('army'),("army")),
+        (('dabled'),('dabled')),
+        (('none'),('none'))
+    )
+    privilage = models.CharField(choices=Choices,max_length=100,default='none')
+    approve = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.username
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class Train(models.Model):
     TRAIN_TYPE_CHOICES = (
@@ -168,6 +198,8 @@ class TicketBooking(models.Model):
     razor_pay_payment_id = models.CharField(max_length=1000,null=True,blank=True)
     razor_pay_payment_signature = models.CharField(max_length=1000,null=True,blank=True)
     ticket_image = models.ImageField(upload_to="tickets",null=True,blank=True)
+    discount = models.PositiveIntegerField(default=0)
+    discounted_price = models.PositiveIntegerField(default=0)
     def __str__(self):
         return f"{self.name}'s Booking on {self.event_date}"      
 

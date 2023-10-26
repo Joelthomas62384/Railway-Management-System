@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block cssblock %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="{% static "css/booking.css" %}">
+</style>
+{% endblock cssblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="form-container">
+        <form action="{% url "login" %}" method="post">
+            {% csrf_token %}
+            <label for="">Username</label>
+            <input type="text" placeholder="username" name='username' >
+            <br>
+            <br>
+            <label for="">Password</label>
+            <input type="password" name='password'>
+            <br>
+            <br>
+            <button type="submit">Submit</button>
+
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

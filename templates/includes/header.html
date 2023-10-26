@@ -7,7 +7,12 @@
       <li><a href="{% url "home" %}">Home</a></li>
       <li><a href="{% url "booking" %}">Booking</a></li>
       <li><a href="{% url "livetrain" %}">Train Status</a></li>
-     
+      {% if user.is_authenticated %}
+      <li><a href="{% url 'logout' %}">Logout : {{user.username}}</a></li> 
+    {% else %}
+      <li><a href="{% url 'login' %}">Login</a></li>
+      <li><a href="{% url 'register' %}">Register</a></li>
+    {% endif %}
     </ul>
   </div>
 

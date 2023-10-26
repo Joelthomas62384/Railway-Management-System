@@ -78,7 +78,10 @@ class ArrivalUpdate(WebsocketConsumer):
         # data['departed_filter'] = departed_list
         data['length'] = length_route_arrived
         data['arrived_len'] = len(arrived_filter)
-        data['current_station'] = current_station.route_stops.station.name
+        try:
+            data['current_station'] = current_station.route_stops.station.name
+        except:
+            data['current_station'] = "Journey Finished"
 
         self.send(json.dumps({"payload":data}))
 
