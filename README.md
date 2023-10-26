@@ -10,6 +10,13 @@ To set up the Railway Management System on your local machine, follow these step
 1. **Download and Install Redis Server**
    - Download Redis Server from [sourceforge](https://sourceforge.net/projects/redis-for-windows.mirror/files/v5.0.14.1/Redis-x64-5.0.14.1.msi/download?use_mirror=pilotfiber).
    - Install Redis Server on your system.
+   - Open the redis folder and run the redis.cli
+     ```bash
+     ping
+     ```
+     this should return Pong
+     then the instalation is correct
+   - Then run the redis-server in that folder
 
 2. **Clone the Repository**
    - Clone this repository to your local machine.
