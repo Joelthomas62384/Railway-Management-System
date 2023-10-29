@@ -196,8 +196,7 @@ def register_user(request):
         email = request.POST.get('email')
         password = request.POST.get('pass')
         privilage = request.POST.get('privilage')
-
-        user = User(username=username,email=email,password=password)
+        user = User.objects.create_user(username=username, email=email, password=password)
         user.save()
         userchoice = UserPrivilage(user = user,privilage=privilage)
         userchoice.save()
