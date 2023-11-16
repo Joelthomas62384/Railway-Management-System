@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 from datetime import timedelta, datetime, time
 from .utils import calculate_distance_and_time
 from math import ceil
@@ -7,8 +8,8 @@ from channels.layers import get_channel_layer
 from django.dispatch import receiver
 from asgiref.sync import async_to_sync
 import json
-import datetime
 from django.contrib.auth.models import User
+from datetime import datetime, timedelta
 
 
 class UserPrivilage(models.Model):
@@ -127,7 +128,7 @@ class Route(models.Model):
             new_time = new_datetime.time()
 
             # Now, you can use new_time as your departure time in RouteStop
-            first_route_stop = RouteStop(route=self, station=self.start_station, Platform=0, arrival=self.start_time, Departure=new_time)
+            first_route_stop = RouteStop(route=self, station=self.start_station,  arrival=self.start_time, Departure=new_time)
             first_route_stop.save()
         
 
